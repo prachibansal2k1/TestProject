@@ -2,15 +2,13 @@ package test;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.*;
 public class welcome extends HttpServlet{
 	public void doPost(HttpServletRequest req,HttpServletResponse res) throws IOException {
-		
-		
-		
 		try{
 			String u=(String) req.getAttribute("user");
 			String p=(String) req.getAttribute("pass");
@@ -19,22 +17,20 @@ public class welcome extends HttpServlet{
             PreparedStatement pst=obj.db.prepareStatement(q);
             pst.setString(1,u);
             pst.setString(2,p);
-           // pst.executeUpdate();
-           // ResultSet rs=pst.executeQuery();
-          // String e=rs.getString("email");
-           //String a=rs.getString("address");
             
-       String e="",a="";
+            String e="",a="";
             ResultSet rs=pst.executeQuery();
             if(rs.next()){
                 e=rs.getString("email");
                 a=rs.getString("address");
                
             }
-          //  t1.set
-            PrintWriter out=res.getWriter();
-    		out.print("Username="+u+" Password="+p+a+e);
-    		out.print("WELCOME");
+    		req.setAttribute("user",u);
+    		req.setAttribute("email",e);
+    		req.setAttribute("add",a);
+    		req.setAttribute("pass",p);
+    		RequestDispatcher rd=req.getRequestDispatcher("update.jsp");
+    		rd.include(req,res);
         }
         catch(Exception e){
             System.out.print(e.getMessage());}
